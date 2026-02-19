@@ -49,6 +49,11 @@ export async function fetchData(id: string) {
     console.error("Menu group fetch failed:", err);
   }
 
+  if (!menuGroupId) {
+    console.error("No menuGroupId, aborting POST request");
+    return menus;
+  }
+
   try {
     const url = `https://aromimenu.cgisaas.fi/TampereAromieMenus/FI/Default/Tampere/Amogus/api/Common/Restaurant/RestaurantMeals?Id=${id}&StartDate=${fmt(start)}&EndDate=${fmt(end)}`;
     const res = await fetch(url, {
