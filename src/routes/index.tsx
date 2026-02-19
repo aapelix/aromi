@@ -73,17 +73,44 @@ export default function Home() {
 
   return (
     <main class="mx-auto bg-[#0f0f0f] text-[#d5d5d5] min-h-screen py-4 font-mono flex flex-col items-center">
-      <div class="flex justify-around w-3xl mb-4">
-        <button onClick={() => setRangeType("today")}>Tänään</button>
-        <button onClick={() => setRangeType("this")}>Tämä viikko</button>
-        <button onClick={() => setRangeType("next")}>Seuraava viikko</button>
-        <button onClick={() => setRangeType("next2")}>Kolmas viikko</button>
-        <button onClick={() => setRangeType("next3")}>Neljäs viikko</button>
+      {/* Buttons */}
+      <div class="flex flex-wrap justify-center w-full max-w-3xl mb-4 gap-2">
+        <button
+          class="px-3 py-1 hover:bg-[#1f1f1f] rounded-xl"
+          onClick={() => setRangeType("today")}
+        >
+          Tänään
+        </button>
+        <button
+          class="px-3 py-1 hover:bg-[#1f1f1f] rounded-xl"
+          onClick={() => setRangeType("this")}
+        >
+          Tämä viikko
+        </button>
+        <button
+          class="px-3 py-1 hover:bg-[#1f1f1f] rounded-xl"
+          onClick={() => setRangeType("next")}
+        >
+          Seuraava viikko
+        </button>
+        <button
+          class="px-3 py-1 hover:bg-[#1f1f1f] rounded-xl"
+          onClick={() => setRangeType("next2")}
+        >
+          Kolmas viikko
+        </button>
+        <button
+          class="px-3 py-1 hover:bg-[#1f1f1f] rounded-xl"
+          onClick={() => setRangeType("next3")}
+        >
+          Neljäs viikko
+        </button>
       </div>
 
-      <div class="flex justify-center">
+      {/* Menu */}
+      <div class="flex justify-center w-full">
         <Suspense fallback={<p>Ootas ny...</p>}>
-          <div class="flex flex-col gap-4 justify-center w-3xl">
+          <div class="flex flex-col gap-4 justify-center w-full max-w-3xl px-4">
             {filteredMenu().length === 0 && (
               <p class="text-lg text-[#d5d5d5]">
                 Ei ruokalistaa saatavilla. Oletettavasti ja toivottavasti
@@ -94,7 +121,7 @@ export default function Home() {
             <For each={filteredMenu()}>
               {(item) => (
                 <div>
-                  <p class="font-bold text-xl text-white mb-1 flex items-center gap-2">
+                  <p class="font-bold text-xl text-white mb-1 flex items-center gap-2 flex-wrap">
                     {item.dateString}
 
                     {rangeType() !== "today" &&
@@ -111,7 +138,7 @@ export default function Home() {
                           <p class="font-semibold text-lg text-[#d5d5d5]">
                             {meal.name}
                           </p>
-                          <div class="flex flex-row gap-x-4 gap-y-2 items-center justify-start flex-wrap">
+                          <div class="flex flex-row gap-x-4 gap-y-2 items-start justify-start flex-wrap w-full">
                             <For each={meal.dishes}>
                               {(dish) => (
                                 <div class="flex items-center gap-2 flex-wrap">
