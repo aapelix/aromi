@@ -2,8 +2,10 @@ import { createAsync, query } from "@solidjs/router";
 import { For, Suspense, createSignal, createMemo } from "solid-js";
 import { DayMenu } from "~/server/menuStore";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const getMenu = query(async () => {
-  const menus = await fetch("http://localhost:3000/api/update");
+  const menus = await fetch(`${API_BASE_URL}/api/update`);
   return (await menus.json()) as DayMenu[];
 }, "menu");
 
