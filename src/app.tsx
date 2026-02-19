@@ -6,14 +6,22 @@ import { Suspense } from "solid-js";
 
 export default function App() {
   return (
-    <Router
-      root={(props) => (
-        <>
-          <Suspense>{props.children}</Suspense>
-        </>
-      )}
-    >
-      <FileRoutes />
-    </Router>
+    <>
+      <script
+        defer
+        src="https://analytics.aapelix.dev/script.js"
+        data-website-id="8da35657-7723-45ea-bc10-2123e3e731d8"
+      ></script>
+
+      <Router
+        root={(props) => (
+          <>
+            <Suspense>{props.children}</Suspense>
+          </>
+        )}
+      >
+        <FileRoutes />
+      </Router>
+    </>
   );
 }
