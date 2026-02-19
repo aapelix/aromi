@@ -41,45 +41,54 @@ export async function fetchData(id: string) {
 
   const menuUrl = `https://aromimenu.cgisaas.fi/TampereAromieMenus/FI/Default/Tampere/TREDUHEPOL/api/GetRestaurantPublicDinerGroups?Id=${id}&StartDate=${fmt(start)}&EndDate=${fmt(new Date())}`;
   console.log("Fetching menu group id from", menuUrl);
-  const menuGroupId = await fetch(menuUrl)
-    .then((res) => res.json())
-    .then((data) => data[0].DinerGroupId);
+  let menuGroupId;
+  try {
+    const res = await fetch(menuUrl);
+    menuGroupId = (await res.json())[0].DinerGroupId;
+  } catch (err) {
+    console.error("Menu group fetch failed:", err);
+  }
 
-  const url = `https://aromimenu.cgisaas.fi/TampereAromieMenus/FI/Default/Tampere/Amogus/api/Common/Restaurant/RestaurantMeals?Id=${id}&StartDate=${fmt(start)}&EndDate=${fmt(end)}`;
-  const res = await fetch(url, {
-    body: JSON.stringify({
-      DinerGroupId: menuGroupId,
-      DietGroupId: "b94dc776-277a-4837-a440-4fe9172c3f35",
-      SuitabilityDietIds: [],
-    }),
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const data = await res.json();
-
-  const menuData: DayMenu[] = data.map((menu: any) => {
-    return {
-      date: menu.Date,
-      dateString: menu.MenuDate,
-      meals: menu.Meals.map((meal: any) => {
-        return {
-          name: meal.MealName,
-          dishes: meal.Dishes.map((dish: any) => {
-            return {
-              name: dish.DishName,
-              details: dish.DietDetails,
-            };
-          }),
-        };
+  try {
+    const url = `https://aromimenu.cgisaas.fi/TampereAromieMenus/FI/Default/Tampere/Amogus/api/Common/Restaurant/RestaurantMeals?Id=${id}&StartDate=${fmt(start)}&EndDate=${fmt(end)}`;
+    const res = await fetch(url, {
+      body: JSON.stringify({
+        DinerGroupId: menuGroupId,
+        DietGroupId: "b94dc776-277a-4837-a440-4fe9172c3f35",
+        SuitabilityDietIds: [],
       }),
-    };
-  });
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  menus = menuData;
-  lastUpdate = new Date();
-  console.log("Menu data updated", menus);
-  return menuData;
+    const data = await res.json();
+
+    const menuData: DayMenu[] = data.map((menu: any) => {
+      return {
+        date: menu.Date,
+        dateString: menu.MenuDate,
+        meals: menu.Meals.map((meal: any) => {
+          return {
+            name: meal.MealName,
+            dishes: meal.Dishes.map((dish: any) => {
+              return {
+                name: dish.DishName,
+                details: dish.DietDetails,
+              };
+            }),
+          };
+        }),
+      };
+    });
+
+    menus = menuData;
+    lastUpdate = new Date();
+    console.log("Menu data updated", menus);
+    return menuData;
+  } catch (error) {
+    console.error("Error fetching menu data", error);
+    return [];
+  }
 }
