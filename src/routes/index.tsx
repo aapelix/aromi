@@ -93,7 +93,7 @@ export default function Home() {
 
   return (
     <main class="mx-auto bg-[#0f0f0f] text-[#d5d5d5] min-h-screen py-10 font-mono flex flex-col items-center transition-colors duration-300 relative">
-      {/* Buttons */}
+      {/* time range buttons */}
       <div class="flex flex-wrap justify-center w-full max-w-3xl mb-6 gap-3">
         {["today", "this", "next", "next2", "next3"].map((type, idx) => {
           const labels = [
@@ -120,7 +120,7 @@ export default function Home() {
         })}
       </div>
 
-      {/* Menu */}
+      {/* actual menu */}
       <div class="flex justify-center w-full">
         <Suspense fallback={<p class="text-center mt-8">Ootas ny…</p>}>
           <div class="flex flex-col gap-6 justify-center w-full max-w-3xl px-4 transition-all duration-300">
@@ -178,7 +178,6 @@ export default function Home() {
         </Suspense>
       </div>
 
-      {/* little footer link */}
       <a
         href="https://aapelix.dev"
         class="text-[#5a5a5a] hover:text-gray-200 absolute bottom-4"
