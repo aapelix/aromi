@@ -1,3 +1,3 @@
 https://aromi.aapelix.dev
 
-data from aromimenu.cgicaas.fi
+data from aromimenu.cgicaas.fi (Pirkanmaan Voimia)
