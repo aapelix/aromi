@@ -1,5 +1,11 @@
 import { createAsync, query } from "@solidjs/router";
-import { For, Suspense, createSignal, createMemo } from "solid-js";
+import {
+  For,
+  Suspense,
+  createSignal,
+  createMemo,
+  createEffect,
+} from "solid-js";
 import { DayMenu } from "~/server/menuStore";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -43,8 +49,22 @@ function getTodayRange() {
 export default function Home() {
   const menu = createAsync(() => getMenu());
   const today = new Date();
+  const [rangeType, setRangeType] = createSignal("");
 
-  const [rangeType, setRangeType] = createSignal("today");
+  createEffect(() => {
+    if (rangeType() === "") {
+      return;
+    }
+
+    localStorage.setItem("rangeType", rangeType());
+  }, [rangeType]);
+
+  createEffect(() => {
+    const savedRangeType = localStorage.getItem("rangeType");
+    if (savedRangeType) {
+      setRangeType(savedRangeType);
+    }
+  }, []);
 
   const range = createMemo(() => {
     switch (rangeType()) {
@@ -72,77 +92,76 @@ export default function Home() {
   });
 
   return (
-    <main class="mx-auto bg-[#0f0f0f] text-[#d5d5d5] min-h-screen py-4 font-mono flex flex-col items-center">
+    <main class="mx-auto bg-[#0f0f0f] text-[#d5d5d5] min-h-screen py-10 font-mono flex flex-col items-center transition-colors duration-300 relative">
       {/* Buttons */}
-      <div class="flex flex-wrap justify-center w-full max-w-3xl mb-4 gap-2">
-        <button
-          class="px-3 py-1 hover:bg-[#1f1f1f] rounded-xl"
-          onClick={() => setRangeType("today")}
-        >
-          Tänään
-        </button>
-        <button
-          class="px-3 py-1 hover:bg-[#1f1f1f] rounded-xl"
-          onClick={() => setRangeType("this")}
-        >
-          Tämä viikko
-        </button>
-        <button
-          class="px-3 py-1 hover:bg-[#1f1f1f] rounded-xl"
-          onClick={() => setRangeType("next")}
-        >
-          Seuraava viikko
-        </button>
-        <button
-          class="px-3 py-1 hover:bg-[#1f1f1f] rounded-xl"
-          onClick={() => setRangeType("next2")}
-        >
-          Kolmas viikko
-        </button>
-        <button
-          class="px-3 py-1 hover:bg-[#1f1f1f] rounded-xl"
-          onClick={() => setRangeType("next3")}
-        >
-          Neljäs viikko
-        </button>
+      <div class="flex flex-wrap justify-center w-full max-w-3xl mb-6 gap-3">
+        {["today", "this", "next", "next2", "next3"].map((type, idx) => {
+          const labels = [
+            "Tänään",
+            "Tämä viikko",
+            "Seuraava viikko",
+            "Kolmas viikko",
+            "Neljäs viikko",
+          ];
+          return (
+            <button
+              class={`px-4 py-2 rounded-xl transition-colors duration-200 ${
+                rangeType() === type
+                  ? "bg-[#1f1f1f] text-white"
+                  : "hover:bg-[#1a1a1a]"
+              }`}
+              onClick={() => setRangeType(type)}
+              // @ts-ignore no idea why it errors on next line. i don't care, it works
+              key={idx}
+            >
+              {labels[idx]}
+            </button>
+          );
+        })}
       </div>
 
       {/* Menu */}
       <div class="flex justify-center w-full">
-        <Suspense fallback={<p>Ootas ny...</p>}>
-          <div class="flex flex-col gap-4 justify-center w-full max-w-3xl px-4">
+        <Suspense fallback={<p class="text-center mt-8">Ootas ny…</p>}>
+          <div class="flex flex-col gap-6 justify-center w-full max-w-3xl px-4 transition-all duration-300">
             {filteredMenu().length === 0 && (
-              <p class="text-lg text-[#d5d5d5]">
-                Ei ruokalistaa saatavilla. Oletettavasti ja toivottavasti
-                kavereilla on lomaa, muuten järjestelmän virhe tai kuolette
-                nälkään. Oletan jälkimmäistä. Päivitä sivu jos et usko
+              <p class="text-lg text-[#d5d5d5] text-center leading-relaxed">
+                Ei ruokalistaa saatavilla. Toivottavasti kavereilla on lomaa.
+                Jos ei, järjestelmän virhe tai kuolette nälkään. Päivitä sivu
+                jos et usko.
               </p>
             )}
-            <For each={filteredMenu()}>
-              {(item) => (
-                <div>
-                  <p class="font-bold text-xl text-white mb-1 flex items-center gap-2 flex-wrap">
-                    {item.dateString}
 
+            <For each={filteredMenu()}>
+              {(item, i) => (
+                <div
+                  class="pb-4"
+                  style={{
+                    "border-bottom":
+                      i() === filteredMenu().length - 1
+                        ? "none"
+                        : "1px solid #1a1a1a",
+                  }}
+                >
+                  <p class="font-bold text-xl text-white mb-2 flex items-center gap-2 flex-wrap">
+                    {item.dateString}
                     {rangeType() !== "today" &&
                       new Date(item.date).toDateString() ===
                         today.toDateString() && (
-                        <div class="inline-block w-2 h-2 bg-green-500 rounded" />
+                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                       )}
                   </p>
 
-                  <div class="flex flex-col gap-2">
+                  <div class="flex flex-col gap-3">
                     <For each={item.meals}>
                       {(meal) => (
                         <div>
-                          <p class="font-semibold text-lg text-[#d5d5d5]">
-                            {meal.name}
-                          </p>
-                          <div class="flex flex-row gap-x-4 gap-y-2 items-start justify-start flex-wrap w-full">
+                          <p class="font-semibold text-lg">{meal.name}</p>
+                          <div class="flex flex-row gap-x-6 gap-y-2 items-start justify-start flex-wrap w-full">
                             <For each={meal.dishes}>
                               {(dish) => (
-                                <div class="flex items-center gap-2 flex-wrap">
-                                  <p class="font-medium text-md">{dish.name}</p>
+                                <div class="flex items-center gap-2 flex-wrap text-[#cfcfcf]">
+                                  <p class="font-medium">{dish.name}</p>
                                   <p class="text-sm">{dish.details}</p>
                                 </div>
                               )}
@@ -158,6 +177,14 @@ export default function Home() {
           </div>
         </Suspense>
       </div>
+
+      {/* little footer link */}
+      <a
+        href="https://aapelix.dev"
+        class="text-[#5a5a5a] hover:text-gray-200 absolute bottom-4"
+      >
+        aapelix.dev
+      </a>
     </main>
   );
 }
