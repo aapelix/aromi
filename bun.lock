@@ -8,7 +8,7 @@
         "@solidjs/router": "^0.15.3",
         "@solidjs/start": "^1.3.2",
         "@unocss/preset-wind4": "^66.5.2",
-        "@unocss/reset": "^66.5.2",
+        "@unocss/reset": "^66.6.7",
         "solid-js": "^1.9.9",
         "solid-motionone": "^1.0.4",
         "unocss": "^66.6.7",
@@ -409,7 +409,7 @@
 
     "@unocss/preset-wind4": ["@unocss/preset-wind4@66.6.0", "", { "dependencies": { "@unocss/core": "66.6.0", "@unocss/extractor-arbitrary-variants": "66.6.0", "@unocss/rule-utils": "66.6.0" } }, "sha512-1yyo9fmB+r5C92kSHU7lIaqGJdvz5UQyYZxYDxSmWLAUzWEK5HBRj6OkSF6rUnz+Yd4JvgOgACZNOShVOezPlA=="],
 
-    "@unocss/reset": ["@unocss/reset@66.6.0", "", {}, "sha512-OQK5F7Dzx0wWDSPTYEz7NRP9pekufSAkjxfKOyKokiXOUzVTg8Yx8sOvCsA3Oi0Rx5WlsO2LN+MOBekpkrttXg=="],
+    "@unocss/reset": ["@unocss/reset@66.6.7", "", {}, "sha512-+OjpLDEaPmhTQ3Gj7EaKApNM92TM9f9gLgHNa79+66wIll9IfhKfEmJXnF9y1SE725n4PmPIQgC9k313HztMLA=="],
 
     "@unocss/rule-utils": ["@unocss/rule-utils@66.6.0", "", { "dependencies": { "@unocss/core": "^66.6.0", "magic-string": "^0.30.21" } }, "sha512-v16l6p5VrefDx8P/gzWnp0p6/hCA0vZ4UMUN6SxHGVE6V+IBpX6I6Du3Egk9TdkhZ7o+Pe1NHxksHcjT0V/tww=="],
 
