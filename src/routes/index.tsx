@@ -8,7 +8,8 @@ import {
 } from "solid-js";
 import { DayMenu } from "~/server/menuStore";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "https://aromi.aapelix.dev";
 
 const getMenu = query(async () => {
   const menus = await fetch(`${API_BASE_URL}/api/update`);
