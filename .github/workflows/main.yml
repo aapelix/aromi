@@ -19,3 +19,4 @@ jobs:
         with:
           git_remote_url: 'ssh://dokku@dokku.aapelix.dev:22/aromi'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          branch: main
