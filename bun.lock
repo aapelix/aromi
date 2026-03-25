@@ -10,7 +10,7 @@
         "@unocss/preset-wind4": "^66.6.7",
         "@unocss/reset": "^66.6.7",
         "posthog-js": "^1.363.5",
-        "solid-js": "^1.9.9",
+        "solid-js": "^1.9.12",
         "solid-motionone": "^1.0.4",
         "unocss": "^66.6.7",
         "vinxi": "^0.5.8",
@@ -1072,7 +1072,7 @@
 
     "smob": ["smob@1.6.1", "", {}, "sha512-KAkBqZl3c2GvNgNhcoyJae1aKldDW0LO279wF9bk1PnluRTETKBq0WyzRXxEhoQLk56yHaOY4JCBEKDuJIET5g=="],
 
-    "solid-js": ["solid-js@1.9.11", "", { "dependencies": { "csstype": "^3.1.0", "seroval": "~1.5.0", "seroval-plugins": "~1.5.0" } }, "sha512-WEJtcc5mkh/BnHA6Yrg4whlF8g6QwpmXXRg4P2ztPmcKeHHlH4+djYecBLhSpecZY2RRECXYUwIc/C2r3yzQ4Q=="],
+    "solid-js": ["solid-js@1.9.12", "", { "dependencies": { "csstype": "^3.1.0", "seroval": "~1.5.0", "seroval-plugins": "~1.5.0" } }, "sha512-QzKaSJq2/iDrWR1As6MHZQ8fQkdOBf8GReYb7L5iKwMGceg7HxDcaOHk0at66tNgn9U2U7dXo8ZZpLIAmGMzgw=="],
 
     "solid-motionone": ["solid-motionone@1.0.4", "", { "dependencies": { "@motionone/dom": "^10.17.0", "@motionone/utils": "^10.17.0", "@solid-primitives/props": "^3.1.11", "@solid-primitives/refs": "^1.0.8", "@solid-primitives/transition-group": "^1.0.5", "csstype": "^3.1.3" }, "peerDependencies": { "solid-js": "^1.8.0" } }, "sha512-aqEjgecoO9raDFznu/dEci7ORSmA26Kjj9J4Cn1Gyr0GZuOVdvsNxdxClTL9J40Aq/uYFx4GLwC8n70fMLHiuA=="],
 
