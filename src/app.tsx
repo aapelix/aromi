@@ -8,12 +8,6 @@ import "./index.css";
 export default function App() {
   return (
     <>
-      <script
-        defer
-        src="https://analytics.aapelix.dev/script.js"
-        data-website-id="8da35657-7723-45ea-bc10-2123e3e731d8"
-      ></script>
-
       <Router
         root={(props) => (
           <>
