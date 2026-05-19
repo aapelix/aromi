@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+html {
+  overflow-y: scroll;
+  background-color: #0f0f0f;
+  color: #d5d5d5;
+  font-family: "Outfit", sans-serif;
+}
+
+@media (prefers-color-scheme: light) {
+  html {
+    background-color: #ffffff;
+    color: #111111;
+  }
+}

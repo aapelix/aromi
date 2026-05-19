@@ -1,0 +1,15 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "cron",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-05-19",
+	"observability": {
+		"enabled": true,
+	},
+	"triggers": {
+		"crons": ["0 0 * * *"],
+	},
+	"upload_source_maps": true,
+	"compatibility_flags": ["nodejs_compat"],
+	"kv_namespaces": [{ "binding": "AROMI_KV", "id": "f90783f64c9f45c9a6a0ad896f47cd79" }],
+}
