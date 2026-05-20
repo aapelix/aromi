@@ -9,7 +9,7 @@
 
 <main class="min-h-screen flex flex-col items-center py-10">
 	<RangeSelector />
-	<MenuList data={data.data} />
+	<MenuList data={data} />
 
 	<p class="fixed bottom-4 flex gap-1">
         aromi by
