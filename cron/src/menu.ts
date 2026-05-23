@@ -89,7 +89,7 @@ export async function fetchMenu(): Promise<DayMenu[]> {
 	}));
 
 	const fetchNutrients = async (mealId: string, date: Date) => {
-		const ts = date.toISOString();
+		const ts = toAnnoyingAndPrettyWeirdThatSomehowWorksDate(date);
 
 		const url =
 			`https://aromimenu.cgisaas.fi/TampereAromieMenus/FI/Default/Tampere/Amogus/api/Common/Restaurant/GetRestaurentMealNutrients` +
@@ -133,14 +133,14 @@ export async function fetchMenu(): Promise<DayMenu[]> {
 
 	for (const res of nutrientResponses) {
 		for (const item of res) {
-			nutrientMap.set(item.DishId ?? item.Dish, item);
+			nutrientMap.set(item.Dish, item);
 		}
 	}
 
 	for (const day of menuData) {
 		for (const meal of day.meals) {
 			for (const dish of meal.dishes) {
-				const item = nutrientMap.get(dish.id);
+				const item = nutrientMap.get(dish.name);
 				if (!item) continue;
 
 				dish.nutrients = parseNutrients(item.Nutrients);
@@ -169,4 +169,11 @@ function parseNutrients(
 		protein: get('Proteiini'),
 		salt: get('Suola'),
 	};
+}
+
+function toAnnoyingAndPrettyWeirdThatSomehowWorksDate(d: Date) {
+	const local = new Date(d);
+	local.setHours(0, 0, 0, 0);
+
+	return new Date(local.getTime() - local.getTimezoneOffset() * 60000).toISOString();
 }
