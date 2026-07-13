@@ -1,0 +1,7 @@
+{
+  "name": "aromi",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ]
+}
