@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fi">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>aromi</title>
+        <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=outfit:400,500,600,700" rel="stylesheet" />
+        <script defer src="https://y.aapelix.dev/script.js" data-website-id="33114cc9-f98c-466d-836f-98fa90368174"></script>
+        <style>
+        :root {
+            --bg: #fbfbfd;
+            --text: #1d1d1f;
+            --muted: #696e73;
+            --line: #d2d2d7;
+            --pill: #1d1d1f;
+            --pill-text: #fff;
+            --pop-bg: rgba(29, 29, 31, .92);
+            --pop-text: #e8e8ed;
+          }
+          @media (prefers-color-scheme: dark) {
+            :root {
+              --bg: #000;
+              --text: #f5f5f7;
+              --muted: #a1a1a6;
+              --line: #2c2c2e;
+              --pill: #f5f5f7;
+              --pill-text: #000;
+              --pop-bg: rgba(44, 44, 46, .95);
+            }
+          }
+          * { box-sizing: border-box; margin: 0; }
+          html {
+            overflow-y: scroll;
+            background-color: #0f0f0f;
+            color: #d5d5d5;
+            font-family: "Outfit", sans-serif;
+          }
+
+          @media (prefers-color-scheme: light) {
+            html {
+              background-color: #ffffff;
+              color: #111111;
+            }
+          }
+          main { display: flex; flex-direction: column; align-items: center; padding: 40px 16px 72px; }
+
+          /* week selector */
+          .tabs {
+            position: relative; display: flex; gap: 6px; margin-bottom: 28px;
+            max-width: 100%; overflow-x: auto;
+          }
+          .tabs .pill {
+            position: absolute; top: 0; height: 100%; border-radius: 12px;
+            background: var(--pill); transition: left .3s ease, width .3s ease;
+          }
+          .tabs button {
+            position: relative; z-index: 1; border: 0; background: none; cursor: pointer;
+            padding: 10px 16px; border-radius: 12px; font: inherit; font-size: 16px;
+            color: var(--muted); white-space: nowrap; transition: color .3s;
+          }
+          .tabs button.active { color: var(--pill-text); }
+
+          /* menu */
+          .menu { width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 24px; }
+          .day { padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+          .day.last {
+            border-bottom: 0;
+          }
+          .day h2 { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+          .dot { width: 8px; height: 8px; border-radius: 50%; background: #34c759; animation: pulse 2s infinite; display: none; }
+          .dot.on { display: inline-block; }
+          @keyframes pulse { 50% { opacity: .3; } }
+          .meal { margin-bottom: 12px; }
+          .meal h3 { font-size: 20px; font-weight: 600; margin-bottom: 2px; }
+          .dishes { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+          .dish { position: relative; }
+          .dish > button {
+            border: 0; background: none; cursor: pointer; font: inherit; font-weight: 500;
+            color: var(--muted); padding: 0; text-align: left;
+            background-image: linear-gradient(currentColor, currentColor);
+            background-size: 0 1px; background-position: 100% 100%; background-repeat: no-repeat;
+            transition: background-size .3s, color .2s;
+            font-size: 18px;
+          }
+          .dish > button:hover { color: var(--text); background-size: 100% 1px; background-position: 0 100%; }
+          .dish small { font-size: 14px; }
+          .pop {
+            display: none; position: absolute; top: 100%; left: 0; z-index: 50; margin-top: 8px;
+            width: 360px; max-width: calc(100vw - 16px); padding: 12px; border-radius: 14px;
+            background: var(--pop-bg); color: var(--pop-text); font-size: 16px;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+          }
+          .pop.open { display: block; animation: in .2s ease; }
+          @keyframes in { from { opacity: 0; transform: translateY(-4px); } }
+          .pop .nutr { margin-top: 8px; }
+          .pop .row { display: flex; justify-content: space-between; }
+
+          /* empty state */
+          .empty { display: none; text-align: center; margin-top: 40px; font-size: 18px; }
+          .empty.show { display: block; }
+          .empty img { width: 280px; max-width: 70%; margin-top: 16px; pointer-events: none; user-select: none; }
+
+          footer { position: fixed; bottom: 14px; font-size: 16px; color: var(--muted); }
+          footer a { color: inherit; text-decoration: none; }
+          footer a:hover { text-decoration: underline; }
+        </style>
+    </head>
+    <body>
+        <main>
+            <nav class="tabs" id="tabs">
+                <span class="pill" id="pill"></span>
+                <button data-type="today">Tänään</button>
+                <button data-type="this">Tämä viikko</button>
+                <button data-type="next">Seuraava viikko</button>
+                <button data-type="next2">Kolmas viikko</button>
+                <button data-type="next3">Neljäs viikko</button>
+            </nav>
+
+            <div class="menu" id="menu">
+                {{ range $i, $day := .Days }}
+                <section class="day" data-date="{{$day.Date.Format "2006-01-02"}}">
+                    <h2>{{$day.DateString}} <span class="dot"></span></h2>
+                    {{range $meal := $day.Meals}}
+                        <div class="meal">
+                            <h3>{{$meal.Name}}</h3>
+                            <div class="dishes">
+                                {{range $dish := $meal.Dishes}}
+                                <div class="dish">
+                                    <button type="button">{{$dish.Name}} <small>{{$dish.Details}}</small></button>
+                                    <div class="pop">
+                                        <p>{{$dish.Ingredients}}</p>
+                                        {{with $dish.Nutrients}}
+                                        <div class="nutr">
+                                            <p>Per 100g</p>
+                                            <div class="row"><span>Energia</span><span>{{printf "%.0f" .Energy}} kcal</span></div>
+                                            <div class="row"><span>Proteiini</span><span>{{printf "%.0f" .Protein}} g</span></div>
+                                            <div class="row"><span>Rasva</span><span>{{printf "%.0f" .Fat}} g</span></div>
+                                            <div class="row"><span>Hiilihydraatit</span><span>{{printf "%.0f" .Carbohydrates}} g</span></div>
+                                            <div class="row"><span>Joista sokereita</span><span>{{printf "%.0f" .CarbohydratesSugar}} g</span></div>
+                                        </div>
+                                        {{end}}
+                                    </div>
+                                </div>
+                                {{end}}
+                            </div>
+                        </div>
+                        {{end}}
+                </section>
+                {{end}}
+                <div class="empty" id="empty">
+                    <p>Ei ruokalistaa saatavilla. Kuolkaatkoon nälkään</p>
+                    <img id="turtle" src="/static/0.svg" alt="Kilpikonna">
+                </div>
+            </div>
+
+            <footer>aromi by <a href="https://aapelix.dev">aapelix</a></footer>
+        </main>
+
+        <script>
+          (function () {
+            var TYPES = ['today', 'this', 'next', 'next2', 'next3'];
+            var current = 'today';
+            var tabs = document.getElementById('tabs');
+            var pill = document.getElementById('pill');
+            var buttons = tabs.querySelectorAll('button');
+            var days = document.querySelectorAll('.day');
+            var empty = document.getElementById('empty');
+
+            function ymd(d) {
+              var m = d.getMonth() + 1, day = d.getDate();
+              return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+            }
+
+            function getRange(type) {
+              var start = new Date();
+              start.setHours(0, 0, 0, 0);
+              if (type === 'today') return [ymd(start), ymd(start)];
+              var off = TYPES.indexOf(type) - 1; // this=0, next=1 ...
+              var dow = start.getDay();
+              start.setDate(start.getDate() + (dow === 0 ? -6 : 1 - dow) + off * 7);
+              var end = new Date(start);
+              end.setDate(end.getDate() + 6);
+              return [ymd(start), ymd(end)];
+            }
+
+            function apply(type) {
+              current = type;
+              var r = getRange(type), today = ymd(new Date()), shown = 0;
+
+              days.forEach(function (el) {
+                el.classList.remove('last');
+                var d = el.dataset.date;
+                var visible = d >= r[0] && d <= r[1];
+                el.style.display = visible ? '' : 'none';
+                if (visible) shown++;
+                el.querySelector('.dot').classList.toggle('on', type !== 'today' && d === today);
+              });
+              empty.classList.toggle('show', shown === 0);
+
+              if (shown > 0) {
+                var visibleDays = Array.from(days).filter(function (el) {
+                  return el.style.display !== 'none';
+                });
+                visibleDays[visibleDays.length - 1].classList.add('last');
+              }
+
+              buttons.forEach(function (b) {
+                var on = b.dataset.type === type;
+                b.classList.toggle('active', on);
+                if (on) {
+                  pill.style.left = b.offsetLeft + 'px';
+                  pill.style.width = b.offsetWidth + 'px';
+                }
+              });
+              closePops();
+            }
+
+            buttons.forEach(function (b) {
+              b.addEventListener('click', function () { apply(b.dataset.type); });
+            });
+            window.addEventListener('resize', function () { apply(current); });
+
+            function closePops() {
+              document.querySelectorAll('.pop.open').forEach(function (p) { p.classList.remove('open'); });
+            }
+            function clamp(pop) {
+              pop.style.transform = '';
+              var r = pop.getBoundingClientRect(), pad = 8, shift = 0;
+              if (r.right > window.innerWidth - pad) shift = window.innerWidth - r.right - pad;
+              if (r.left + shift < pad) shift = pad - r.left;
+              pop.style.transform = 'translateX(' + shift + 'px)';
+            }
+            document.addEventListener('click', function (e) {
+              var btn = e.target.closest('.dish > button');
+              if (!btn) { if (!e.target.closest('.pop')) closePops(); return; }
+              var pop = btn.nextElementSibling, wasOpen = pop.classList.contains('open');
+              closePops();
+              if (!wasOpen) { pop.classList.add('open'); clamp(pop); }
+            });
+
+            var frame = 0, turtle = document.getElementById('turtle');
+            setInterval(function () {
+              if (empty.classList.contains('show')) {
+                frame = (frame + 1) % 3;
+                turtle.src = '/static/' + frame + '.svg';
+              }
+            }, 400);
+
+            apply('today');
+          })();
+        </script>
+    </body>
+</html>
