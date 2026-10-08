@@ -51,16 +51,16 @@ func main() {
 
 	r := gin.Default()
 	r.LoadHTMLFiles(
-      "templates/index.html", 
-      "templates/today.txt"
-    )
+		"templates/index.html",
+		"templates/today.html",
+	)
 	r.Static("/static", "./static")
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"Days": days,
 		})
 	})
-    r.GET("/today", func(c *gin.Context) {
+	r.GET("/today", func(c *gin.Context) {
 		loc, err := time.LoadLocation("Europe/Helsinki")
 		if err != nil {
 			c.String(http.StatusInternalServerError, "failed to load timezone")
@@ -69,9 +69,9 @@ func main() {
 
 		today := time.Now().In(loc).Format("2006-01-02")
 
-		c.Header("Content-Type", "text/plain; charset=utf-8")
+		c.Header("Content-Type", "text/html; charset=utf-8")
 
-		c.HTML(http.StatusOK, "today.txt", gin.H{
+		c.HTML(http.StatusOK, "today.html", gin.H{
 			"Days":  days,
 			"Today": today,
 		})
